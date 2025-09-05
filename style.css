@@ -370,9 +370,13 @@ section {
     justify-content: space-between;
     padding: 1rem 0.5rem;
     border-bottom: 1px solid var(--border-color);
+    transition: opacity 0.3s;
 }
 .list-container li:last-child {
     border-bottom: none;
+}
+.list-container li.pending {
+    opacity: 0.6;
 }
 
 .transaction-details {
@@ -380,6 +384,19 @@ section {
     align-items: center;
     gap: 1rem;
 }
+
+/* --- Estilos do Ícone de Status --- */
+.status-toggle {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+.status-toggle .fa-check-circle {
+    color: var(--primary-color);
+}
+.status-toggle .fa-circle {
+    color: var(--text-light-color);
+}
+/* --- Fim dos Estilos do Ícone de Status --- */
 
 .transaction-icon {
     font-size: 1.5rem;
@@ -437,7 +454,7 @@ li:hover .action-buttons {
 .edit-btn { color: var(--accent-color); }
 .delete-btn { color: var(--secondary-color); }
 
-/* Estilos do Modal de Edição */
+/* Estilos do Modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -492,7 +509,14 @@ li:hover .action-buttons {
     background-color: var(--primary-color);
     color: white;
 }
-#cancel-edit-btn {
+#cancel-edit-btn, #cancel-delete-btn {
     background-color: #333;
     color: var(--text-color);
+}
+.modal-actions button.danger {
+    background-color: var(--secondary-color);
+    color: white;
+}
+.modal-actions button.danger:hover {
+    background-color: #b71c1c;
 }

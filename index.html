@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinanCare - Controle Financeiro</title>
+    <title>FinanCare - Controlo Financeiro</title>
     <link rel="stylesheet" href="style.css">
     <!-- Font Awesome para Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
@@ -25,16 +25,16 @@
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Logo do Google">
                 <span>Entrar com Google</span>
             </button>
-            <p>Não tem uma conta? <a href="#" id="show-register">Cadastre-se</a></p>
+            <p>Não tem uma conta? <a href="#" id="show-register">Registe-se</a></p>
         </div>
 
         <div class="form-container" id="register-container" style="display: none;">
             <h2><i class="fas fa-leaf highlight"></i> FinanCare</h2>
-            <p class="subtitle">Crie sua conta para começar</p>
+            <p class="subtitle">Crie a sua conta para começar</p>
             <form id="register-form">
                 <input type="email" id="register-email" placeholder="E-mail" required>
                 <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" required>
-                <button type="submit">Cadastrar</button>
+                <button type="submit">Registar</button>
             </form>
             <div class="separator">ou</div>
             <button type="button" id="google-signin-btn-register" class="google-btn">
@@ -83,7 +83,7 @@
                 <div class="card balance">
                     <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
                     <div class="card-content">
-                        <h3>Saldo</h3>
+                        <h3>Saldo (Real)</h3>
                         <p id="balance">R$ 0,00</p>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
             <section class="list-container">
                 <h2>Histórico de Transações</h2>
                 <ul id="transactions-history-list">
-                    <li>Nenhuma transação registrada para este mês.</li>
+                    <li>Nenhuma transação registada para este mês.</li>
                 </ul>
             </section>
         </main>
@@ -141,9 +141,21 @@
                 </div>
                 <div class="modal-actions">
                     <button type="button" id="cancel-edit-btn">Cancelar</button>
-                    <button type="submit">Salvar Alterações</button>
+                    <button type="submit">Guardar Alterações</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- JANELA MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <div id="delete-confirm-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Confirmar Exclusão</h2>
+            <p>Tem a certeza que deseja apagar permanentemente esta transação?</p>
+            <div class="modal-actions">
+                <button type="button" id="cancel-delete-btn">Não</button>
+                <button type="button" id="confirm-delete-btn" class="danger">Sim, Excluir</button>
+            </div>
         </div>
     </div>
 
@@ -153,7 +165,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <!-- Nosso script -->
+    <!-- O nosso script -->
     <script src="app.js"></script>
 </body>
 </html>
