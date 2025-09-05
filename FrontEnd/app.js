@@ -41,6 +41,11 @@ const transactionsHistoryList = document.getElementById('transactions-history-li
 const showAddFormBtn = document.getElementById('show-add-transaction-form');
 const transactionFormContainer = document.getElementById('transaction-form-container');
 
+// Modal de Edição
+const editModal = document.getElementById('edit-modal');
+const editForm = document.getElementById('edit-transaction-form');
+const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
 
 // --- Estado da Aplicação ---
 let currentUser = null;
@@ -62,7 +67,6 @@ const categoryIcons = {
 
 // --- Lógica de Autenticação ---
 
-// Observa mudanças no estado de autenticação (login/logout)
 auth.onAuthStateChanged((user) => {
     if (user) {
         currentUser = user;
@@ -74,11 +78,10 @@ auth.onAuthStateChanged((user) => {
         currentUser = null;
         authContainer.style.display = 'flex';
         appContainer.style.display = 'none';
-        if(unsubscribe) unsubscribe(); // Cancela o listener do banco de dados ao deslogar
+        if(unsubscribe) unsubscribe(); 
     }
 });
 
-// Evento de submit do formulário de Login
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
@@ -89,7 +92,6 @@ loginForm.addEventListener('submit', (e) => {
         });
 });
 
-// Evento de submit do formulário de Cadastro
 registerForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('register-email').value;
@@ -100,12 +102,10 @@ registerForm.addEventListener('submit', (e) => {
         });
 });
 
-// Evento de clique no botão de Logout
 logoutButton.addEventListener('click', () => {
     auth.signOut();
 });
 
-// Alternar entre telas de login e cadastro
 showRegister.addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('login-container').style.display = 'none';
@@ -123,14 +123,18 @@ showLogin.addEventListener('click', (e) => {
 
 function initializeAppInterface() {
     populateDateSelectors();
-    populateCategorySelector();
+    populateCategorySelector(typeSelect.value, categorySelect);
     updateTransactions();
 
     monthSelect.addEventListener('change', handleDateChange);
     yearInput.addEventListener('change', handleDateChange);
     prevMonthBtn.addEventListener('click', goToPrevMonth);
     nextMonthBtn.addEventListener('click', goToNextMonth);
-    typeSelect.addEventListener('change', populateCategorySelector);
+    typeSelect.addEventListener('change', () => populateCategorySelector(typeSelect.value, categorySelect));
+    
+    // Listeners do modal de edição
+    document.getElementById('edit-type').addEventListener('change', () => populateCategorySelector(document.getElementById('edit-type').value, document.getElementById('edit-category')));
+    cancelEditBtn.addEventListener('click', () => editModal.style.display = 'none');
 }
 
 function handleDateChange() {
@@ -161,7 +165,6 @@ function goToNextMonth() {
     updateTransactions();
 }
 
-
 function populateDateSelectors() {
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     monthSelect.innerHTML = '';
@@ -176,26 +179,26 @@ function populateDateSelectors() {
     document.getElementById('date').valueAsDate = new Date();
 }
 
-function populateCategorySelector() {
-    const currentType = typeSelect.value;
-    const currentCategories = categories[currentType];
-    categorySelect.innerHTML = '';
+function populateCategorySelector(type, selectorElement, selectedCategory = null) {
+    const currentCategories = categories[type];
+    selectorElement.innerHTML = '';
     currentCategories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
-        categorySelect.appendChild(option);
+        selectorElement.appendChild(option);
     });
+    if (selectedCategory) {
+        selectorElement.value = selectedCategory;
+    }
 }
 
-// Botão para mostrar/ocultar formulário de transação
 showAddFormBtn.addEventListener('click', () => {
     const isVisible = transactionFormContainer.style.display === 'block';
     transactionFormContainer.style.display = isVisible ? 'none' : 'block';
     showAddFormBtn.innerHTML = isVisible ? '<i class="fas fa-plus"></i> Adicionar Transação' : '<i class="fas fa-times"></i> Fechar';
 });
 
-// Adicionar nova transação
 addTransactionForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const description = document.getElementById('description').value;
@@ -223,7 +226,6 @@ addTransactionForm.addEventListener('submit', (e) => {
         document.getElementById('date').valueAsDate = new Date();
         transactionFormContainer.style.display = 'none';
         showAddFormBtn.innerHTML = '<i class="fas fa-plus"></i> Adicionar Transação';
-        updateTransactions();
     })
     .catch(error => {
         console.error("Erro ao adicionar transação: ", error);
@@ -231,36 +233,34 @@ addTransactionForm.addEventListener('submit', (e) => {
     });
 });
 
-// Busca e atualiza as transações do mês
 function updateTransactions() {
     if (!currentUser) return;
     
+    if (unsubscribe) unsubscribe(); // Cancela o listener anterior
+
     transactionsHistoryList.innerHTML = '<li>Carregando...</li>';
     
     const startDate = new Date(currentYear, currentMonth, 1).toISOString().split('T')[0];
-    const endDate = new Date(currentYear, currentMonth + 1, 1).toISOString().split('T')[0];
+    const endDate = new Date(currentYear, currentMonth + 1, 0).toISOString().split('T')[0];
 
-    db.collection("transactions")
+    unsubscribe = db.collection("transactions")
         .where("uid", "==", currentUser.uid)
         .where("date", ">=", startDate)
-        .where("date", "<", endDate)
+        .where("date", "<=", endDate)
         .orderBy("date", "desc")
-        .get()
-        .then(querySnapshot => {
+        .onSnapshot(querySnapshot => {
             const transactions = [];
             querySnapshot.forEach((doc) => {
                 transactions.push({ id: doc.id, ...doc.data() });
             });
             renderTransactions(transactions);
             updateSummary(transactions);
-        })
-        .catch(error => {
+        }, error => {
             console.error("Erro ao buscar transações:", error);
             transactionsHistoryList.innerHTML = '<li>Erro ao carregar dados.</li>';
         });
 }
 
-// Renderiza a lista de transações na tela
 function renderTransactions(transactions) {
     transactionsHistoryList.innerHTML = '';
     
@@ -284,17 +284,26 @@ function renderTransactions(transactions) {
                 </div>
             </div>
             <div class="transaction-right">
-                <div class="amount ${t.type}">
-                    ${t.type === 'expense' ? '-' : '+'} R$ ${t.amount.toFixed(2).replace('.', ',')}
+                <div class="amount-date">
+                     <div class="amount ${t.type}">
+                        ${t.type === 'expense' ? '-' : '+'} R$ ${t.amount.toFixed(2).replace('.', ',')}
+                    </div>
+                     <div class="date">${new Date(t.date + 'T00:00:00').toLocaleDateString('pt-BR')}</div>
                 </div>
-                 <div class="date">${new Date(t.date + 'T00:00:00').toLocaleDateString('pt-BR')}</div>
+                <div class="action-buttons">
+                    <button class="edit-btn" data-id="${t.id}"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="delete-btn" data-id="${t.id}"><i class="fas fa-trash"></i></button>
+                </div>
             </div>
         `;
         transactionsHistoryList.appendChild(li);
+
+        // Adicionar eventos para os botões de ação
+        li.querySelector('.delete-btn').addEventListener('click', () => deleteTransaction(t.id));
+        li.querySelector('.edit-btn').addEventListener('click', () => openEditModal(t));
     });
 }
 
-// Atualiza os cards de resumo (receita, despesa, saldo)
 function updateSummary(transactions) {
     const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
     const totalExpense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
@@ -307,9 +316,59 @@ function updateSummary(transactions) {
     const balanceCard = balanceEl.closest('.card');
     if (balance < 0) {
         balanceCard.classList.add('expense');
-        balanceCard.classList.remove('income');
+        balanceCard.classList.remove('income', 'balance');
     } else {
-         balanceCard.classList.add('income');
+         balanceCard.classList.add('balance');
          balanceCard.classList.remove('expense');
     }
 }
+
+// --- Funções de Deletar e Editar ---
+
+function deleteTransaction(id) {
+    if (confirm("Tem certeza que deseja apagar esta transação?")) {
+        db.collection('transactions').doc(id).delete()
+            .catch(error => {
+                console.error("Erro ao deletar transação:", error);
+                alert("Não foi possível apagar a transação.");
+            });
+    }
+}
+
+function openEditModal(transaction) {
+    editModal.style.display = 'flex';
+    document.getElementById('edit-id').value = transaction.id;
+    document.getElementById('edit-description').value = transaction.description;
+    document.getElementById('edit-amount').value = transaction.amount;
+    document.getElementById('edit-date').value = transaction.date;
+    document.getElementById('edit-type').value = transaction.type;
+    
+    // Popula as categorias corretas e seleciona a atual
+    populateCategorySelector(transaction.type, document.getElementById('edit-category'), transaction.category);
+}
+
+editForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('edit-id').value;
+    const updatedTransaction = {
+        description: document.getElementById('edit-description').value,
+        amount: parseFloat(document.getElementById('edit-amount').value),
+        date: document.getElementById('edit-date').value,
+        type: document.getElementById('edit-type').value,
+        category: document.getElementById('edit-category').value,
+    };
+    
+    if (!updatedTransaction.description || isNaN(updatedTransaction.amount) || !updatedTransaction.date || updatedTransaction.amount <= 0) {
+        alert("Por favor, preencha todos os campos com valores válidos.");
+        return;
+    }
+
+    db.collection('transactions').doc(id).update(updatedTransaction)
+        .then(() => {
+            editModal.style.display = 'none';
+        })
+        .catch(error => {
+            console.error("Erro ao atualizar transação:", error);
+            alert("Não foi possível salvar as alterações.");
+        });
+});
