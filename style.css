@@ -110,6 +110,52 @@ body {
     font-weight: 500;
 }
 
+/* --- Estilos do Botão Google e Separador --- */
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-light-color);
+    margin: 1.5rem 0;
+}
+.separator::before, .separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+.separator:not(:empty)::before {
+    margin-right: .25em;
+}
+.separator:not(:empty)::after {
+    margin-left: .25em;
+}
+
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    color: #1f1f1f;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s;
+}
+.google-btn:hover {
+    background-color: #f5f5f5;
+}
+.google-btn img {
+    width: 20px;
+    height: 20px;
+}
+/* --- Fim dos Estilos do Botão Google --- */
+
+
 /* --- App Principal --- */
 #app-container {
     width: 100%;
@@ -359,6 +405,11 @@ section {
     align-items: center;
     gap: 1rem;
 }
+
+.amount-date {
+    text-align: right;
+}
+
 .amount.income { color: var(--primary-color); font-weight: 600; }
 .amount.expense { color: var(--secondary-color); font-weight: 600; }
 

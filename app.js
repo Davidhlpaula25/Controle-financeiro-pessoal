@@ -22,6 +22,10 @@ const registerForm = document.getElementById('register-form');
 const showRegister = document.getElementById('show-register');
 const showLogin = document.getElementById('show-login');
 
+// Botões de Login com Google
+const googleSignInBtnLogin = document.getElementById('google-signin-btn-login');
+const googleSignInBtnRegister = document.getElementById('google-signin-btn-register');
+
 const userEmailSpan = document.getElementById('user-email');
 const logoutButton = document.getElementById('logout-button');
 const monthSelect = document.getElementById('month');
@@ -72,7 +76,7 @@ auth.onAuthStateChanged((user) => {
         currentUser = user;
         authContainer.style.display = 'none';
         appContainer.style.display = 'block';
-        userEmailSpan.textContent = user.email;
+        userEmailSpan.textContent = user.displayName || user.email; // Mostra o nome do Google, se disponível
         initializeAppInterface();
     } else {
         currentUser = null;
@@ -101,6 +105,20 @@ registerForm.addEventListener('submit', (e) => {
             alert("Erro ao cadastrar: " + error.message);
         });
 });
+
+// --- Lógica de Login com Google ---
+function signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+        .catch(error => {
+            console.error("Erro ao fazer login com Google:", error);
+            alert("Erro: " + error.message);
+        });
+}
+
+googleSignInBtnLogin.addEventListener('click', signInWithGoogle);
+googleSignInBtnRegister.addEventListener('click', signInWithGoogle);
+// --- Fim da Lógica de Login com Google ---
 
 logoutButton.addEventListener('click', () => {
     auth.signOut();
