@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Gastos Mensal</title>
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Link para o arquivo de estilos -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Container de Autenticação (visível no início) -->
+    <div id="auth-container" class="container">
+        <div class="form-container" id="login-container">
+            <h2><i class="fas fa-leaf"></i> Finan<span class="highlight">C</span>are</h2>
+            <p class="subtitle">Faça login para continuar</p>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <p>Não tem uma conta? <a href="#" id="show-register">Cadastre-se</a></p>
+        </div>
+
+        <div class="form-container" id="register-container" style="display: none;">
+            <h2><i class="fas fa-leaf"></i> Finan<span class="highlight">C</span>are</h2>
+            <p class="subtitle">Crie sua conta</p>
+            <form id="register-form">
+                <input type="email" id="register-email" placeholder="Email" required>
+                <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+            <p>Já tem uma conta? <a href="#" id="show-login">Faça Login</a></p>
+        </div>
+    </div>
+
+    <!-- Container Principal do App (oculto no início) -->
+    <div id="app-container" style="display: none;">
+        <header>
+            <div class="logo">
+                <i class="fas fa-leaf"></i> Finan<span class="highlight">C</span>are
+            </div>
+            <div class="user-info">
+                <span id="user-email"></span>
+                <button id="logout-button" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <main>
+            <section class="month-selector">
+                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                <div class="date-display">
+                    <select id="month"></select>
+                    <input type="number" id="year" min="2020" max="2050">
+                </div>
+                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+            </section>
+
+            <section class="summary">
+                <div class="card income">
+                    <div class="card-icon"><i class="fas fa-arrow-up"></i></div>
+                    <div class="card-content">
+                        <h3>Receita Total</h3>
+                        <p id="total-income">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="card expense">
+                     <div class="card-icon"><i class="fas fa-arrow-down"></i></div>
+                    <div class="card-content">
+                        <h3>Despesa Total</h3>
+                        <p id="total-expense">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="card balance">
+                     <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
+                    <div class="card-content">
+                        <h3>Saldo</h3>
+                        <p id="balance">R$ 0,00</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="transaction-toggle">
+                 <button id="show-add-transaction-form" class="add-btn"><i class="fas fa-plus"></i> Adicionar Transação</button>
+            </section>
+            
+            <section class="transaction-form-container" id="transaction-form-container" style="display: none;">
+                 <h2>Nova Transação</h2>
+                <form id="add-transaction-form">
+                    <div class="form-row">
+                        <input type="text" id="description" placeholder="Descrição (ex: Salário, Aluguel)" required>
+                        <input type="number" id="amount" placeholder="Valor (ex: 150.50)" step="0.01" required>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div class="form-row">
+                        <select id="type" required>
+                            <option value="income">Receita</option>
+                            <option value="expense">Despesa</option>
+                        </select>
+                        <select id="category" required>
+                            <!-- Categorias populadas pelo JS -->
+                        </select>
+                    </div>
+                    <button type="submit">Adicionar</button>
+                </form>
+            </section>
+            
+            <section class="transactions-list">
+                <div class="list-container">
+                    <h2><i class="fas fa-wallet"></i> Histórico de Transações</h2>
+                    <ul id="transactions-history-list"></ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts do Firebase (versão compatível) -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Nosso script principal (sem type="module") -->
+    <script src="app.js"></script>
+</body>
+</html>
+
