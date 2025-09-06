@@ -35,7 +35,9 @@ const categorySelect = document.getElementById('category');
 const totalIncomeEl = document.getElementById('total-income');
 const totalExpenseEl = document.getElementById('total-expense');
 const balanceEl = document.getElementById('balance');
-const transactionsHistoryList = document.getElementById('transactions-history-list');
+const pendingContainer = document.getElementById('pending-container');
+const pendingList = document.getElementById('pending-list');
+const completedList = document.getElementById('completed-list');
 const showAddFormBtn = document.getElementById('show-add-transaction-form');
 const transactionFormContainer = document.getElementById('transaction-form-container');
 
@@ -52,7 +54,7 @@ let currentUser = null;
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let unsubscribe;
-let transactionIdToDelete = null; // Guarda o ID da transação a ser apagada
+let transactionIdToDelete = null;
 
 const categories = {
     income: ['Salário', 'Freelance', 'Investimentos', 'Vendas', 'Outros'],
@@ -105,6 +107,7 @@ logoutButton.addEventListener('click', () => auth.signOut());
 showRegister.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('login-container').style.display = 'none'; document.getElementById('register-container').style.display = 'block'; });
 showLogin.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('register-container').style.display = 'none'; document.getElementById('login-container').style.display = 'block'; });
 
+
 // --- Lógica Principal da Aplicação ---
 function initializeAppInterface() {
     populateDateSelectors();
@@ -144,30 +147,15 @@ function goToNextMonth() {
 
 function populateDateSelectors() {
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    monthSelect.innerHTML = '';
-    months.forEach((month, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = month;
-        monthSelect.appendChild(option);
-    });
+    monthSelect.innerHTML = months.map((m, i) => `<option value="${i}">${m}</option>`).join('');
     monthSelect.value = currentMonth;
     yearInput.value = currentYear;
     document.getElementById('date').valueAsDate = new Date();
 }
 
 function populateCategorySelector(type, selectorElement, selectedCategory = null) {
-    const currentCategories = categories[type];
-    selectorElement.innerHTML = '';
-    currentCategories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        selectorElement.appendChild(option);
-    });
-    if (selectedCategory) {
-        selectorElement.value = selectedCategory;
-    }
+    selectorElement.innerHTML = categories[type].map(c => `<option value="${c}">${c}</option>`).join('');
+    if (selectedCategory) selectorElement.value = selectedCategory;
 }
 
 showAddFormBtn.addEventListener('click', () => {
@@ -208,7 +196,7 @@ function updateTransactions() {
     if (!currentUser) return;
     if (unsubscribe) unsubscribe();
 
-    transactionsHistoryList.innerHTML = '<li>A carregar...</li>';
+    completedList.innerHTML = '<li>A carregar...</li>';
     const startDate = new Date(currentYear, currentMonth, 1).toISOString().split('T')[0];
     const endDate = new Date(currentYear, currentMonth + 1, 0).toISOString().split('T')[0];
 
@@ -223,60 +211,97 @@ function updateTransactions() {
             updateSummary(transactions);
         }, error => {
             console.error("Erro ao procurar transações:", error);
-            transactionsHistoryList.innerHTML = '<li>Erro ao carregar dados.</li>';
+            completedList.innerHTML = '<li>Erro ao carregar dados.</li>';
         });
 }
 
+// --- LÓGICA DE RENDERIZAÇÃO ATUALIZADA ---
 function renderTransactions(transactions) {
-    transactionsHistoryList.innerHTML = '';
-    if (transactions.length === 0) {
-        transactionsHistoryList.innerHTML = '<li>Nenhuma transação registada para este mês.</li>';
-        return;
+    const pendingExpenses = transactions.filter(t => t.type === 'expense' && t.status === 'pending');
+    const completedTransactions = transactions.filter(t => t.type === 'income' || t.status === 'paid');
+
+    if (pendingExpenses.length > 0) {
+        pendingContainer.style.display = 'block';
+        pendingList.innerHTML = '';
+        pendingExpenses.forEach(t => {
+            const li = document.createElement('li');
+            li.className = 'transaction-item pending';
+            const iconClass = categoryIcons[t.category] || 'fa-question-circle';
+
+            li.innerHTML = `
+                <div class="transaction-details">
+                    <div class="transaction-icon ${t.type}"><i class="fas ${iconClass}"></i></div>
+                    <div>
+                        <div class="description">${t.description}</div>
+                        <div class="category">${t.category}</div>
+                    </div>
+                </div>
+                <div class="transaction-right">
+                    <div class="amount-date">
+                         <div class="amount ${t.type}">- R$ ${t.amount.toFixed(2).replace('.', ',')}</div>
+                         <div class="date">${new Date(t.date + 'T00:00:00').toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="pay-btn" data-id="${t.id}">Marcar como Pago</button>
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            pendingList.appendChild(li);
+            li.querySelector('.pay-btn').addEventListener('click', () => toggleTransactionStatus(t.id, 'paid'));
+            li.querySelector('.delete-btn').addEventListener('click', () => openDeleteConfirmation(t.id));
+            li.querySelector('.edit-btn').addEventListener('click', () => openEditModal(t));
+        });
+    } else {
+        pendingContainer.style.display = 'none';
     }
 
-    transactions.forEach(t => {
-        const li = document.createElement('li');
-        li.className = t.status === 'pending' ? 'pending' : '';
-        const iconClass = categoryIcons[t.category] || 'fa-question-circle';
+    completedList.innerHTML = '';
+    if (completedTransactions.length > 0) {
+        completedTransactions.forEach(t => {
+            const li = document.createElement('li');
+            li.className = `transaction-item ${t.status}`;
+            const iconClass = categoryIcons[t.category] || 'fa-question-circle';
+            const sign = t.type === 'expense' ? '-' : '+';
 
-        const statusIcon = t.type === 'expense'
-            ? `<span class="status-toggle" data-id="${t.id}" data-status="${t.status}">
-                 <i class="fas ${t.status === 'paid' ? 'fa-check-circle' : 'fa-circle'}"></i>
-               </span>`
-            : '';
+            // NOVIDADE: Adiciona o botão de desfazer para despesas pagas
+            const unpayButton = (t.type === 'expense' && t.status === 'paid')
+                ? `<button class="unpay-btn" title="Marcar como Pendente"><i class="fas fa-undo"></i></button>`
+                : '';
 
-        li.innerHTML = `
-            <div class="transaction-details">
-                ${statusIcon}
-                <div class="transaction-icon ${t.type}">
-                    <i class="fas ${iconClass}"></i>
-                </div>
-                <div>
-                    <div class="description">${t.description}</div>
-                    <div class="category">${t.category}</div>
-                </div>
-            </div>
-            <div class="transaction-right">
-                <div class="amount-date">
-                     <div class="amount ${t.type}">
-                        ${t.type === 'expense' ? '-' : '+'} R$ ${t.amount.toFixed(2).replace('.', ',')}
+            li.innerHTML = `
+                <div class="transaction-details">
+                    <div class="transaction-icon ${t.type}"><i class="fas ${iconClass}"></i></div>
+                    <div>
+                        <div class="description">${t.description}</div>
+                        <div class="category">${t.category}</div>
                     </div>
-                     <div class="date">${new Date(t.date + 'T00:00:00').toLocaleDateString('pt-BR')}</div>
                 </div>
-                <div class="action-buttons">
-                    <button class="edit-btn"><i class="fas fa-pencil-alt"></i></button>
-                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>`;
-        transactionsHistoryList.appendChild(li);
-
-        li.querySelector('.delete-btn').addEventListener('click', () => openDeleteConfirmation(t.id));
-        li.querySelector('.edit-btn').addEventListener('click', () => openEditModal(t));
-        if (t.type === 'expense') {
-            li.querySelector('.status-toggle').addEventListener('click', toggleTransactionStatus);
-        }
-    });
+                <div class="transaction-right">
+                    <div class="amount-date">
+                         <div class="amount ${t.type}">${sign} R$ ${t.amount.toFixed(2).replace('.', ',')}</div>
+                         <div class="date">${new Date(t.date + 'T00:00:00').toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <div class="action-buttons">
+                        ${unpayButton}
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            completedList.appendChild(li);
+            li.querySelector('.delete-btn').addEventListener('click', () => openDeleteConfirmation(t.id));
+            li.querySelector('.edit-btn').addEventListener('click', () => openEditModal(t));
+            
+            // NOVIDADE: Adiciona o evento para o botão de desfazer, se ele existir
+            if (unpayButton) {
+                li.querySelector('.unpay-btn').addEventListener('click', () => toggleTransactionStatus(t.id, 'pending'));
+            }
+        });
+    } else if (pendingExpenses.length === 0) {
+         completedList.innerHTML = '<li>Nenhuma transação registada para este mês.</li>';
+    }
 }
+
 
 function updateSummary(transactions) {
     const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
@@ -303,10 +328,7 @@ function updateSummary(transactions) {
 
 // --- Funções de Apagar, Editar e Mudar Status ---
 
-function toggleTransactionStatus(event) {
-    const id = event.currentTarget.dataset.id;
-    const currentStatus = event.currentTarget.dataset.status;
-    const newStatus = currentStatus === 'pending' ? 'paid' : 'pending';
+function toggleTransactionStatus(id, newStatus) {
     db.collection('transactions').doc(id).update({ status: newStatus });
 }
 
@@ -351,6 +373,10 @@ function handleEditFormSubmit(e) {
     }
 
     db.collection('transactions').doc(id).update(updatedTransaction)
-        .then(() => editModal.style.display = 'none')
-        .catch(error => alert("Não foi possível guardar as alterações."));
+        .then(() => {
+            editModal.style.display = 'none';
+        })
+        .catch(error => {
+            alert("Não foi possível guardar as alterações.");
+        });
 }

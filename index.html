@@ -113,10 +113,14 @@
             </section>
             
             <section class="list-container">
-                <h2>Histórico de Transações</h2>
-                <ul id="transactions-history-list">
-                    <li>Nenhuma transação registada para este mês.</li>
-                </ul>
+                <div id="pending-container" style="display: none;">
+                    <h2>Contas Pendentes</h2>
+                    <ul id="pending-list"></ul>
+                </div>
+                <div id="completed-container">
+                    <h2>Histórico de Transações</h2>
+                    <ul id="completed-list"></ul>
+                </div>
             </section>
         </main>
     </div>

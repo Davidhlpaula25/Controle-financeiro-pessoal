@@ -361,9 +361,15 @@ section {
     padding-bottom: 0.75rem;
     font-weight: 600;
 }
+
+#pending-container {
+    margin-bottom: 2.5rem;
+}
+
 .list-container ul {
     list-style-type: none;
 }
+
 .list-container li {
     display: flex;
     align-items: center;
@@ -372,31 +378,27 @@ section {
     border-bottom: 1px solid var(--border-color);
     transition: opacity 0.3s;
 }
+
 .list-container li:last-child {
     border-bottom: none;
 }
-.list-container li.pending {
-    opacity: 0.6;
+
+/* --- Estilos da Transação Paga --- */
+.transaction-item.paid .description {
+    text-decoration: line-through;
+    color: var(--text-light-color);
 }
+.transaction-item.paid {
+    opacity: 0.7;
+}
+/* --- Fim dos Estilos --- */
+
 
 .transaction-details {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
-
-/* --- Estilos do Ícone de Status --- */
-.status-toggle {
-    cursor: pointer;
-    font-size: 1.5rem;
-}
-.status-toggle .fa-check-circle {
-    color: var(--primary-color);
-}
-.status-toggle .fa-circle {
-    color: var(--text-light-color);
-}
-/* --- Fim dos Estilos do Ícone de Status --- */
 
 .transaction-icon {
     font-size: 1.5rem;
@@ -438,12 +440,17 @@ section {
 .action-buttons {
     display: flex;
     gap: 0.5rem;
+}
+#pending-list li .action-buttons,
+#completed-list li .action-buttons {
     opacity: 0;
     transition: opacity 0.3s;
 }
-li:hover .action-buttons {
+#pending-list li:hover .action-buttons,
+#completed-list li:hover .action-buttons {
     opacity: 1;
 }
+
 .action-buttons button {
     background: transparent;
     border: none;
@@ -453,6 +460,19 @@ li:hover .action-buttons {
 }
 .edit-btn { color: var(--accent-color); }
 .delete-btn { color: var(--secondary-color); }
+.unpay-btn { color: var(--primary-color); } /* NOVIDADE */
+
+.pay-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 1rem;
+}
 
 /* Estilos do Modal */
 .modal-overlay {
