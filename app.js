@@ -65,7 +65,7 @@ let currentYear = new Date().getFullYear();
 let unsubscribeTransactions;
 let unsubscribeTemplates;
 let transactionIdToDelete = null;
-let templateIdToDelete = null; // NOVIDADE
+let templateIdToDelete = null;
 let userTemplates = [];
 
 const categories = {
@@ -121,8 +121,6 @@ function setupListeners() {
     addTemplateForm.addEventListener('submit', handleAddTemplate);
     document.getElementById('template-type').addEventListener('change', (e) => populateCategorySelector(e.target.value, document.getElementById('template-category')));
     useTemplateBtn.addEventListener('click', () => templatesModal.style.display = 'flex');
-
-    // Listeners do modal de exclusão de modelo
     confirmDeleteTemplateBtn.addEventListener('click', handleDeleteTemplateConfirmation);
     cancelDeleteTemplateBtn.addEventListener('click', () => deleteTemplateConfirmModal.style.display = 'none');
 }
