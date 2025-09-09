@@ -12,511 +12,115 @@
     --shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px;
-}
+body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; }
+.container { width: 100%; max-width: 450px; margin-top: 5vh; }
+.form-container { background-color: var(--card-bg-color); padding: 2.5rem; border-radius: 12px; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border-color); }
+.form-container h2 { font-size: 1.8rem; font-weight: 600; color: var(--text-color); margin-bottom: 0.5rem; }
+.form-container h2 .highlight { color: var(--primary-color); }
+.form-container .subtitle { margin-bottom: 2rem; color: var(--text-light-color); }
+.form-container input { width: 100%; padding: 14px; margin-bottom: 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; background-color: #252525; color: var(--text-color); }
+.form-container input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.4); }
+.form-container button { width: 100%; padding: 14px; border: none; border-radius: 8px; background-color: var(--primary-color); color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background-color 0.3s, transform 0.1s; }
+.form-container button:hover { background-color: #388E3C; }
+.form-container button:active { transform: scale(0.98); }
+.form-container p { text-align: center; margin-top: 1.5rem; }
+.form-container a { color: var(--primary-color); text-decoration: none; font-weight: 500; }
 
-.container {
-    width: 100%;
-    max-width: 450px;
-    margin-top: 5vh;
-}
+.separator { display: flex; align-items: center; text-align: center; color: var(--text-light-color); margin: 1.5rem 0; }
+.separator::before, .separator::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+.separator:not(:empty)::before { margin-right: .25em; }
+.separator:not(:empty)::after { margin-left: .25em; }
+.google-btn { width: 100%; padding: 12px; border-radius: 8px; background-color: #FFFFFF; color: #1f1f1f; font-weight: 600; font-size: 1rem; cursor: pointer; border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 0.3s; }
+.google-btn:hover { background-color: #f5f5f5; }
+.google-btn img { width: 20px; height: 20px; }
 
-/* --- Autenticação --- */
-.form-container {
-    background-color: var(--card-bg-color);
-    padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    text-align: center;
-    border: 1px solid var(--border-color);
-}
-
-.form-container h2 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 0.5rem;
-}
-
-.form-container h2 .highlight {
-    color: var(--primary-color);
-}
-
-.form-container .subtitle {
-    margin-bottom: 2rem;
-    color: var(--text-light-color);
-}
-
-.form-container input {
-    width: 100%;
-    padding: 14px;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: #252525;
-    color: var(--text-color);
-}
-
-.form-container input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.4);
-}
-
-.form-container button {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-}
-
-.form-container button:hover {
-    background-color: #388E3C;
-}
-
-.form-container button:active {
-    transform: scale(0.98);
-}
-
-.form-container p {
-    text-align: center;
-    margin-top: 1.5rem;
-}
-
-.form-container a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-/* --- Estilos do Botão Google e Separador --- */
-.separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: var(--text-light-color);
-    margin: 1.5rem 0;
-}
-.separator::before, .separator::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid var(--border-color);
-}
-.separator:not(:empty)::before {
-    margin-right: .25em;
-}
-.separator:not(:empty)::after {
-    margin-left: .25em;
-}
-
-.google-btn {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    background-color: #FFFFFF;
-    color: #1f1f1f;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    border: 1px solid var(--border-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    transition: background-color 0.3s;
-}
-.google-btn:hover {
-    background-color: #f5f5f5;
-}
-.google-btn img {
-    width: 20px;
-    height: 20px;
-}
-/* --- Fim dos Estilos do Botão Google --- */
-
-
-/* --- App Principal --- */
-#app-container {
-    width: 100%;
-    max-width: 1200px;
-    background: var(--background-color);
-}
-
-header {
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    margin-bottom: 2rem;
-    border: 1px solid var(--border-color);
-}
-
-header .logo {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
+#app-container { width: 100%; max-width: 1200px; background: var(--background-color); }
+header { background-color: var(--card-bg-color); color: var(--text-color); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 2rem; border: 1px solid var(--border-color); }
+header .logo { font-size: 1.5rem; font-weight: 600; }
 header .logo .highlight { color: var(--primary-color); }
+header .user-info { display: flex; align-items: center; gap: 1rem; }
+.header-btn { background: transparent; color: var(--text-light-color); border: none; font-size: 1.2rem; cursor: pointer; transition: color 0.3s; }
+.header-btn:hover { color: var(--accent-color); }
+#logout-button:hover { color: var(--secondary-color); }
+main { padding: 0; }
+section { margin-bottom: 2rem; }
 
-header .user-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
+.month-selector { display: flex; justify-content: center; align-items: center; gap: 1rem; background: var(--card-bg-color); padding: 1rem; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+.month-selector button { background: transparent; border: none; font-size: 1.5rem; color: var(--primary-color); cursor: pointer; }
+.month-selector .date-display { display: flex; gap: 0.5rem; }
+.month-selector select, .month-selector input { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif; background-color: #252525; color: var(--text-color); }
 
-header #logout-button {
-    background: transparent;
-    color: var(--text-light-color);
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-header #logout-button:hover {
-    color: var(--secondary-color);
-}
-
-main {
-    padding: 0;
-}
-
-section {
-    margin-bottom: 2rem;
-}
-
-.month-selector {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    background: var(--card-bg-color);
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
-}
-.month-selector button {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--primary-color);
-    cursor: pointer;
-}
-.month-selector .date-display {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.month-selector select, .month-selector input {
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: 'Poppins', sans-serif;
-    background-color: #252525;
-    color: var(--text-color);
-}
-
-.summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-}
-
-.card {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    background: var(--card-bg-color);
-    transition: transform 0.3s;
-    border: 1px solid var(--border-color);
-}
-.card:hover {
-    transform: translateY(-5px);
-}
-.card-icon {
-    font-size: 2rem;
-    padding: 1rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.card { display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow); background: var(--card-bg-color); transition: transform 0.3s; border: 1px solid var(--border-color); }
+.card:hover { transform: translateY(-5px); }
+.card-icon { font-size: 2rem; padding: 1rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .card.income .card-icon { color: var(--primary-color); background-color: rgba(46, 125, 50, 0.1); }
 .card.expense .card-icon { color: var(--secondary-color); background-color: rgba(211, 47, 47, 0.1); }
 .card.balance .card-icon { color: var(--accent-color); background-color: rgba(25, 118, 210, 0.1); }
-
-.card-content h3 {
-    margin-bottom: 0.25rem;
-    font-weight: 500;
-    color: var(--text-light-color);
-}
-.card-content p {
-    font-size: 1.7rem;
-    font-weight: 600;
-}
+.card-content h3 { margin-bottom: 0.25rem; font-weight: 500; color: var(--text-light-color); }
+.card-content p { font-size: 1.7rem; font-weight: 600; }
 .card.income p { color: var(--primary-color); }
 .card.expense p { color: var(--secondary-color); }
 .card.balance p { color: var(--accent-color); }
 
-.transaction-toggle {
-    text-align: center;
-}
+.transaction-toggle { text-align: center; }
+.add-btn { padding: 12px 24px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.3s; }
+.add-btn:hover { background-color: #388E3C; }
 
-.add-btn {
-    padding: 12px 24px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: background-color 0.3s;
-}
-.add-btn:hover {
-    background-color: #388E3C;
-}
+.transaction-form-container { background: var(--card-bg-color); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+.transaction-form-container .form-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.transaction-form-container h2 { margin-bottom: 0; font-weight: 600; }
+.secondary-btn { padding: 8px 12px; background: #333; color: var(--text-color); border: 1px solid #444; border-radius: 8px; cursor: pointer; }
+.secondary-btn:hover { background: #444; }
 
-.transaction-form-container {
-    background: var(--card-bg-color);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
-}
-.transaction-form-container h2 {
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-}
+#add-transaction-form { display: flex; flex-direction: column; gap: 1rem; }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+#add-transaction-form input, #add-transaction-form select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; background-color: #252525; color: var(--text-color); }
+#add-transaction-form button { padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 1rem; }
 
-#add-transaction-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-}
-#add-transaction-form input, #add-transaction-form select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: #252525;
-    color: var(--text-color);
-}
-#add-transaction-form button {
-    padding: 12px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 1rem;
-}
-
-.list-container {
-    background: var(--card-bg-color);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
-}
-
-.list-container h2 {
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.75rem;
-    font-weight: 600;
-}
-.list-container ul {
-    list-style-type: none;
-}
-.list-container li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-    transition: opacity 0.3s;
-}
-.list-container li:last-child {
-    border-bottom: none;
-}
-.list-container li.pending {
-    opacity: 0.6;
-}
-
-.transaction-details {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-/* --- Estilos do Ícone de Status --- */
-.status-toggle {
-    cursor: pointer;
-    font-size: 1.5rem;
-}
-.status-toggle .fa-check-circle {
-    color: var(--primary-color);
-}
-.status-toggle .fa-circle {
-    color: var(--text-light-color);
-}
-/* --- Fim dos Estilos do Ícone de Status --- */
-
-.transaction-icon {
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
+.list-container { background: var(--card-bg-color); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+.list-container h2 { margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; font-weight: 600; }
+#pending-container { margin-bottom: 2.5rem; }
+.list-container ul { list-style-type: none; }
+.list-container li { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0.5rem; border-bottom: 1px solid var(--border-color); transition: opacity 0.3s; }
+.list-container li:last-child { border-bottom: none; }
+.transaction-item.paid .description { text-decoration: line-through; color: var(--text-light-color); }
+.transaction-item.paid { opacity: 0.7; }
+.transaction-details { display: flex; align-items: center; gap: 1rem; }
+.transaction-icon { font-size: 1.5rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 .transaction-icon.income { color: var(--primary-color); background-color: rgba(46, 125, 50, 0.1); }
 .transaction-icon.expense { color: var(--secondary-color); background-color: rgba(211, 47, 47, 0.1); }
-
-.description {
-    font-weight: 500;
-}
-.category {
-    font-size: 0.8rem;
-    color: var(--text-light-color);
-}
-.transaction-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.amount-date {
-    text-align: right;
-}
-
+.description { font-weight: 500; }
+.category { font-size: 0.8rem; color: var(--text-light-color); }
+.transaction-right { display: flex; align-items: center; gap: 1rem; }
+.amount-date { text-align: right; }
 .amount.income { color: var(--primary-color); font-weight: 600; }
 .amount.expense { color: var(--secondary-color); font-weight: 600; }
-
-.date {
-    font-size: 0.8rem;
-    color: var(--text-light-color);
-}
-
-.action-buttons {
-    display: flex;
-    gap: 0.5rem;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-li:hover .action-buttons {
-    opacity: 1;
-}
-.action-buttons button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0.25rem;
-}
+.date { font-size: 0.8rem; color: var(--text-light-color); }
+.action-buttons { display: flex; gap: 0.5rem; }
+#pending-list li .action-buttons, #completed-list li .action-buttons { opacity: 0; transition: opacity 0.3s; }
+#pending-list li:hover .action-buttons, #completed-list li:hover .action-buttons { opacity: 1; }
+.action-buttons button { background: transparent; border: none; cursor: pointer; font-size: 1rem; padding: 0.25rem; }
 .edit-btn { color: var(--accent-color); }
 .delete-btn { color: var(--secondary-color); }
+.unpay-btn { color: var(--primary-color); }
+.pay-btn { background-color: var(--primary-color); color: white; border: none; border-radius: 5px; padding: 6px 12px; font-size: 0.8rem; font-weight: 500; cursor: pointer; margin-right: 1rem; }
 
-/* Estilos do Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-.modal-content {
-    background-color: var(--card-bg-color);
-    padding: 2rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
-    border: 1px solid var(--border-color);
-}
-.modal-title {
-    margin-bottom: 1.5rem;
-}
-#edit-transaction-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-#edit-transaction-form input, #edit-transaction-form select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: #252525;
-    color: var(--text-color);
-}
-.modal-actions {
-    margin-top: 1.5rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-.modal-actions button {
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
-}
-.modal-actions button[type="submit"] {
-    background-color: var(--primary-color);
-    color: white;
-}
-#cancel-edit-btn, #cancel-delete-btn {
-    background-color: #333;
-    color: var(--text-color);
-}
-.modal-actions button.danger {
-    background-color: var(--secondary-color);
-    color: white;
-}
-.modal-actions button.danger:hover {
-    background-color: #b71c1c;
-}
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background-color: var(--card-bg-color); padding: 2rem; border-radius: 12px; width: 90%; max-width: 500px; border: 1px solid var(--border-color); }
+.modal-title { margin-bottom: 1.5rem; }
+.modal-subtitle { margin-top: 2rem; margin-bottom: 1rem; font-weight: 600; border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
+#edit-transaction-form, #add-template-form { display: flex; flex-direction: column; gap: 1rem; }
+#edit-transaction-form input, #edit-transaction-form select, #add-template-form input, #add-template-form select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; background-color: #252525; color: var(--text-color); }
+.modal-actions { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem; }
+.modal-actions button { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; }
+.modal-actions button[type="submit"] { background-color: var(--primary-color); color: white; }
+#cancel-edit-btn, #cancel-delete-btn, #cancel-budget-btn, #close-templates-modal-btn { background-color: #333; color: var(--text-color); }
+.modal-actions button.danger { background-color: var(--secondary-color); color: white; }
+.modal-actions button.danger:hover { background-color: #b71c1c; }
+
+#templates-list .template-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-radius: 8px; background-color: #252525; margin-bottom: 0.5rem; cursor: pointer; }
+#templates-list .template-item:hover { background-color: #333; }
+#templates-list .delete-template-btn { background: transparent; border: none; color: var(--secondary-color); cursor: pointer; font-size: 1rem; }
