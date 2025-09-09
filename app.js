@@ -53,6 +53,10 @@ const templatesModal = document.getElementById('templates-modal');
 const closeTemplatesModalBtn = document.getElementById('close-templates-modal-btn');
 const templatesListContainer = document.getElementById('templates-list');
 const addTemplateForm = document.getElementById('add-template-form');
+const deleteTemplateConfirmModal = document.getElementById('delete-template-confirm-modal');
+const confirmDeleteTemplateBtn = document.getElementById('confirm-delete-template-btn');
+const cancelDeleteTemplateBtn = document.getElementById('cancel-delete-template-btn');
+
 
 // --- Estado da Aplicação ---
 let currentUser = null;
@@ -61,6 +65,7 @@ let currentYear = new Date().getFullYear();
 let unsubscribeTransactions;
 let unsubscribeTemplates;
 let transactionIdToDelete = null;
+let templateIdToDelete = null; // NOVIDADE
 let userTemplates = [];
 
 const categories = {
@@ -116,6 +121,10 @@ function setupListeners() {
     addTemplateForm.addEventListener('submit', handleAddTemplate);
     document.getElementById('template-type').addEventListener('change', (e) => populateCategorySelector(e.target.value, document.getElementById('template-category')));
     useTemplateBtn.addEventListener('click', () => templatesModal.style.display = 'flex');
+
+    // Listeners do modal de exclusão de modelo
+    confirmDeleteTemplateBtn.addEventListener('click', handleDeleteTemplateConfirmation);
+    cancelDeleteTemplateBtn.addEventListener('click', () => deleteTemplateConfirmModal.style.display = 'none');
 }
 
 function handleDateChange() { currentMonth = parseInt(monthSelect.value); currentYear = parseInt(yearInput.value); updateTransactions(); }
@@ -146,7 +155,7 @@ function renderTemplatesList() {
     } else {
         templatesListContainer.innerHTML = '<p>Nenhum modelo guardado.</p>';
     }
-    document.querySelectorAll('.delete-template-btn').forEach(btn => btn.addEventListener('click', handleDeleteTemplate));
+    document.querySelectorAll('.delete-template-btn').forEach(btn => btn.addEventListener('click', openDeleteTemplateConfirmation));
     document.querySelectorAll('.template-item').forEach(item => item.addEventListener('click', handleUseTemplate));
 }
 
@@ -166,16 +175,23 @@ function handleAddTemplate(e) {
     }
 }
 
-function handleDeleteTemplate(e) {
-    e.stopPropagation(); 
-    const id = e.currentTarget.dataset.id;
-    if (confirm("Tem a certeza que deseja apagar este modelo?")) {
-        db.collection('templates').doc(id).delete();
+function openDeleteTemplateConfirmation(e) {
+    e.stopPropagation();
+    templateIdToDelete = e.currentTarget.dataset.id;
+    deleteTemplateConfirmModal.style.display = 'flex';
+}
+
+function handleDeleteTemplateConfirmation() {
+    if (templateIdToDelete) {
+        db.collection('templates').doc(templateIdToDelete).delete()
+            .catch(error => alert("Não foi possível apagar o modelo."));
+        deleteTemplateConfirmModal.style.display = 'none';
+        templateIdToDelete = null;
     }
 }
 
 function handleUseTemplate(e) {
-    if (e.target.closest('.delete-template-btn')) return; // Não fazer nada se o clique foi no botão de apagar
+    if (e.target.closest('.delete-template-btn')) return;
     const id = e.currentTarget.dataset.id;
     const template = userTemplates.find(t => t.id === id);
     if (template) {
