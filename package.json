@@ -1,4 +1,7 @@
 {
+  "name": "financare",
+  "private": true,
+  "description": "Aplicação web de controle financeiro pessoal com Firebase.",
   "dependencies": {
     "firebase": "^12.2.1"
   }

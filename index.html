@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,8 +16,8 @@
             <h2><i class="fas fa-leaf highlight"></i> FinanCare</h2>
             <p class="subtitle">Faça login para continuar</p>
             <form id="login-form">
-                <input type="email" id="login-email" placeholder="E-mail" required>
-                <input type="password" id="login-password" placeholder="Senha" required>
+                <input type="email" id="login-email" placeholder="E-mail" autocomplete="email" required>
+                <input type="password" id="login-password" placeholder="Senha" autocomplete="current-password" required>
                 <button type="submit">Entrar</button>
             </form>
             <div class="separator">ou</div>
@@ -32,8 +32,8 @@
             <h2><i class="fas fa-leaf highlight"></i> FinanCare</h2>
             <p class="subtitle">Crie a sua conta para começar</p>
             <form id="register-form">
-                <input type="email" id="register-email" placeholder="E-mail" required>
-                <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" required>
+                <input type="email" id="register-email" placeholder="E-mail" autocomplete="email" required>
+                <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" autocomplete="new-password" required>
                 <button type="submit">Registar</button>
             </form>
             <div class="separator">ou</div>
@@ -50,20 +50,32 @@
         <header>
             <div class="logo">Finan<span class="highlight">Care</span></div>
             <div class="user-info">
-                <button id="manage-templates-btn" class="header-btn" title="Modelos"><i class="fas fa-star"></i></button>
+                <button type="button" id="manage-templates-btn" class="header-btn" title="Modelos"><i class="fas fa-star"></i></button>
                 <span id="user-email"></span>
-                <button id="logout-button" class="header-btn" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
+                <button type="button" id="logout-button" class="header-btn" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </header>
 
         <main>
+            <section class="hero-panel">
+                <div>
+                    <p class="eyebrow">Resumo mensal</p>
+                    <h1>Controle seu dinheiro com clareza</h1>
+                    <p class="hero-copy">Acompanhe receitas, despesas e pendências por mês com uma leitura rápida e organizada.</p>
+                </div>
+                <div class="hero-chip" aria-hidden="true">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Visão consolidada</span>
+                </div>
+            </section>
+
             <section class="month-selector">
-                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                <button type="button" id="prev-month"><i class="fas fa-chevron-left"></i></button>
                 <div class="date-display">
                     <select id="month"></select>
-                    <input type="number" id="year" min="2020" max="2050">
+                    <input type="number" id="year" min="2020" max="2050" inputmode="numeric">
                 </div>
-                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                <button type="button" id="next-month"><i class="fas fa-chevron-right"></i></button>
             </section>
 
             <section class="summary">
@@ -91,13 +103,13 @@
             </section>
 
             <section class="transaction-toggle">
-                <button class="add-btn" id="show-add-transaction-form"><i class="fas fa-plus"></i> Adicionar Transação</button>
+                <button type="button" class="add-btn" id="show-add-transaction-form"><i class="fas fa-plus"></i> Adicionar Transação</button>
             </section>
 
             <section id="transaction-form-container" class="transaction-form-container" style="display: none;">
                 <div class="form-header">
                     <h2>Nova Transação</h2>
-                    <button id="use-template-btn" class="secondary-btn"><i class="fas fa-star"></i> Usar Modelo</button>
+                    <button type="button" id="use-template-btn" class="secondary-btn"><i class="fas fa-star"></i> Usar Modelo</button>
                 </div>
                 <form id="add-transaction-form">
                     <div class="form-row">
@@ -105,13 +117,17 @@
                             <option value="expense">Despesa</option>
                             <option value="income">Receita</option>
                         </select>
-                        <input type="date" id="date" required>
+                        <input type="date" id="date" autocomplete="off" required>
                     </div>
                     <input type="text" id="description" placeholder="Descrição (ex: Supermercado, Salário)" required>
                     <div class="form-row">
-                        <input type="number" id="amount" placeholder="Valor (ex: 150.50)" step="0.01" required>
+                        <input type="number" id="amount" placeholder="Valor (ex: 150.50)" step="0.01" min="0.01" inputmode="decimal" required>
                         <select id="category" required></select>
                     </div>
+                    <label class="checkbox-row">
+                        <input type="checkbox" id="recurring" checked>
+                        <span>Conta fixa, copiar para o próximo mês</span>
+                    </label>
                     <button type="submit">Adicionar</button>
                 </form>
             </section>
@@ -135,18 +151,25 @@
             <h2 class="modal-title">Editar Transação</h2>
             <form id="edit-transaction-form">
                 <input type="hidden" id="edit-id">
+                <input type="hidden" id="edit-status">
+                <input type="hidden" id="edit-original-type">
+                <input type="hidden" id="edit-original-status">
                 <div class="form-row">
                     <select id="edit-type" required>
                         <option value="expense">Despesa</option>
                         <option value="income">Receita</option>
                     </select>
-                    <input type="date" id="edit-date" required>
+                    <input type="date" id="edit-date" autocomplete="off" required>
                 </div>
                 <input type="text" id="edit-description" placeholder="Descrição" required>
                 <div class="form-row">
-                    <input type="number" id="edit-amount" placeholder="Valor" step="0.01" required>
+                    <input type="number" id="edit-amount" placeholder="Valor" step="0.01" min="0.01" inputmode="decimal" required>
                     <select id="edit-category" required></select>
                 </div>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="edit-recurring">
+                    <span>Conta fixa, copiar para o próximo mês</span>
+                </label>
                 <div class="modal-actions">
                     <button type="button" id="cancel-edit-btn">Cancelar</button>
                     <button type="submit">Guardar Alterações</button>
@@ -191,7 +214,7 @@
                     </select>
                     <select id="template-category"></select>
                 </div>
-                <input type="number" id="template-amount" placeholder="Valor" step="0.01" required>
+                <input type="number" id="template-amount" placeholder="Valor" step="0.01" min="0.01" inputmode="decimal" required>
                 <button type="submit">Guardar Modelo</button>
             </form>
             <div class="modal-actions">
@@ -205,6 +228,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
